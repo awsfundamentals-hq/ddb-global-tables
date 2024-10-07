@@ -1,47 +1,42 @@
-# Astro Starter Kit: Minimal
+# DynamoDB Global Tables Demo
 
-```sh
-npm create astro@latest -- --template minimal
-```
+This project demonstrates the use of DynamoDB Global Tables using SST (Serverless Stack) v3.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Getting Started
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+To run this application, follow these steps:
 
-## 🚀 Project Structure
+1. Ensure you have Node.js installed on your system.
+2. Clone this repository to your local machine.
+3. Install the dependencies by running `pnpm i` in the project root directory.
+4. Start the development server by running:
 
-Inside of your Astro project, you'll see the following folders and files:
+   ```
+   npx sst dev
+   ```
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+This command will deploy the application to your AWS account and start the local development environment.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## About the Project
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+This application is built using SST v3, which provides a powerful framework for building serverless applications.
 
-Any static assets, like images, can be placed in the `public/` directory.
+It showcases DynamoDB Global Tables for multi-region data replication.
 
-## 🧞 Commands
+The app allows you to add items to DynamoDB tables in different regions and observe the replication in real-time.
 
-All commands are run from the root of the project, from a terminal:
+When a new item is added to the US East 1 region, it is automatically replicated to the EU West 1 region.
+This is also true for the other way around.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+As the items are immediately reloaded afterwards, sometime you can see that the item is not immediately available in the other region.
 
-## 👀 Want to learn more?
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Project Structure
+
+- `sst.config.ts`: SST configuration file
+- `src/pages/index.astro`: Main Astro page for the frontend
+- `functions/lambda.ts`: Lambda function handling API requests
+
+## Learn More
+
+To learn more about SST and how to use it for serverless development, check out the [SST documentation](https://docs.sst.dev/).
