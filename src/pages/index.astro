@@ -1,5 +1,34 @@
 ---
+const apiUrl = import.meta.env.API_URL;
 
+async function fetchData() {
+	const response = await fetch(apiUrl);
+	const data = await response.json();
+	return {
+		usEast1Items: data.usEast1Items || [],
+		euWest1Items: data.euWest1Items || []
+	};
+}
+
+let { usEast1Items, euWest1Items } = await fetchData();
+
+async function addItem(region: string) {
+	await fetch(apiUrl, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ region }),
+	});
+	({ usEast1Items, euWest1Items } = await fetchData());
+}
+
+async function clearTables() {
+	await fetch(apiUrl, {
+		method: 'DELETE',
+	});
+	({ usEast1Items, euWest1Items } = await fetchData());
+}
 ---
 
 <html lang="en">
@@ -8,9 +37,133 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>DynamoDB Global Tables</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<main>
+			<h1>DynamoDB Global Tables</h1>
+			<div class="button-container">
+				<button id="us-east-1-btn">Add to US East 1</button>
+				<button id="eu-west-1-btn">Add to EU West 1</button>
+				<button id="clear-tables-btn" class="clear-btn">Clear Tables</button>
+			</div>
+			<div class="table-container">
+				<h2>API Response:</h2>
+				<table>
+					<thead>
+						<tr>
+							<th>US East 1</th>
+							<th>EU West 1</th>
+						</tr>
+					</thead>
+					<tbody>
+						{usEast1Items.map((item: any, index: number) => (
+							<tr>
+								<td>{item.id}</td>
+								<td>{euWest1Items[index]?.id || '-'}</td>
+							</tr>
+						))}
+						{euWest1Items.slice(usEast1Items.length).map((item: any) => (
+							<tr>
+								<td>-</td>
+								<td>{item.id}</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		</main>
+
+		<script define:vars={{ apiUrl }}>
+			async function addItem(region) {
+				await fetch(apiUrl, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ region }),
+				});
+				window.location.reload();
+			}
+
+			async function clearTables() {
+				await fetch(apiUrl, {
+					method: 'DELETE',
+				});
+				window.location.reload();
+			}
+
+			document.getElementById('us-east-1-btn').addEventListener('click', () => addItem('us-east-1'));
+			document.getElementById('eu-west-1-btn').addEventListener('click', () => addItem('eu-west-1'));
+			document.getElementById('clear-tables-btn').addEventListener('click', clearTables);
+		</script>
+
+		<style>
+			body {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+				background-color: #f5f5f5;
+				color: #333;
+				line-height: 1.6;
+				padding: 20px;
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			main {
+				background-color: white;
+				padding: 30px;
+				border-radius: 8px;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			}
+			h1 {
+				color: #2c3e50;
+				text-align: center;
+			}
+			h2 {
+				color: #34495e;
+			}
+			.button-container {
+				display: flex;
+				justify-content: center;
+				gap: 10px;
+				margin-bottom: 20px;
+			}
+			button {
+				background-color: #3498db;
+				color: white;
+				border: none;
+				padding: 10px 20px;
+				border-radius: 5px;
+				cursor: pointer;
+				transition: background-color 0.3s;
+			}
+			button:hover {
+				background-color: #2980b9;
+			}
+			.clear-btn {
+				background-color: #e74c3c;
+			}
+			.clear-btn:hover {
+				background-color: #c0392b;
+			}
+			.table-container {
+				overflow-x: auto;
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			th, td {
+				padding: 12px;
+				text-align: left;
+				border-bottom: 1px solid #ddd;
+			}
+			thead {
+				background-color: #34495e;
+				color: white;
+			}
+			tr:nth-child(even) {
+				background-color: #f2f2f2;
+			}
+		</style>
 	</body>
 </html>
