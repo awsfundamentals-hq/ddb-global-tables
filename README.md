@@ -2,6 +2,9 @@
 
 This project demonstrates the use of DynamoDB Global Tables using SST (Serverless Stack) v3.
 
+![image](https://github.com/user-attachments/assets/2805fac2-5738-4178-ac98-7633f5edf211)
+
+
 ## Getting Started
 
 To run this application, follow these steps:
@@ -28,7 +31,7 @@ The app allows you to add items to DynamoDB tables in different regions and obse
 When a new item is added to the US East 1 region, it is automatically replicated to the EU West 1 region.
 This is also true for the other way around.
 
-As the items are immediately reloaded afterwards, sometime you can see that the item is not immediately available in the other region.
+As the items are immediately reloaded afterward, sometimes you can see that the item is not immediately available in the other region.
 
 
 ## Project Structure
